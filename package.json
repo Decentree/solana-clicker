@@ -1,0 +1,51 @@
+{
+  "name": "solana-forest",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "postbuild": "next-sitemap",
+    "export": "npm run build && next export",
+    "start": "next start",
+    "type-check": "tsc",
+    "lint": "eslint && prettier --check \"**/**.{ts,js,tsx}\" \"*.{json,md,yml,mdx}\"",
+    "prettier": "prettier --write '**/**.{ts,js,tsx}' '*.{json,md,yml,mdx}'"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^1.8.6",
+    "@emotion/react": "^11.8.1",
+    "@emotion/styled": "^11.8.1",
+    "@sentry/react": "^6.16.1",
+    "@sentry/tracing": "^6.16.1",
+    "@solana/wallet-adapter-base": "^0.9.4",
+    "@solana/wallet-adapter-react": "^0.15.3",
+    "@solana/wallet-adapter-react-ui": "^0.9.5",
+    "@solana/wallet-adapter-wallets": "^0.15.4",
+    "@solana/web3.js": "^1.35.1",
+    "framer-motion": "^6.2.8",
+    "i18next": "^21.6.3",
+    "i18next-browser-languagedetector": "^6.1.2",
+    "next": "12.0.7",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-i18next": "^11.15.1",
+    "ts-react-feather-icons": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.0",
+    "@types/react": "^17.0.37",
+    "@types/react-dom": "^17.0.11",
+    "@types/styled-components": "^5.1.18",
+    "@typescript-eslint/eslint-plugin": "^5.7.0",
+    "@typescript-eslint/parser": "^5.7.0",
+    "babel-plugin-styled-components": "^2.0.2",
+    "eslint": "^8.5.0",
+    "eslint-config-next": "^12.0.7",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.27.1",
+    "next-sitemap": "^1.6.203",
+    "prettier": "^2.5.1",
+    "react-inspector": "^5.1.1"
+  }
+}
