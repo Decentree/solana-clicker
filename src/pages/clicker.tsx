@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import Cookie from '../components/clicker/Cookie'
+import Counter from '../components/clicker/Counter'
+import Header from '../components/clicker/Header'
 import RingParticleSystem, { RingParticleEvent } from '../components/clicker/RingParticleSystem'
 
 type Props = {}
@@ -28,19 +30,32 @@ const CookieContainer = styled.div`
 `
 
 function Clicker({ }: Props) {
+
+    const [coins, setCoints] = useState<number>(0);
+
+    const addCoin = () => {
+        setCoints(coins + 1);
+    }
+
+    const cookieClicked: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+        spawnRingParticle(e.pageX, e.pageY);
+        addCoin();
+    }
+
     // Ring particles
     const [ringParticles, setRingParticles] = useState<RingParticleEvent[]>([]);
-    const cookieClicked: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+
+    const spawnRingParticle = (positionX: number, positionY: number) => {
         setRingParticles([
             ...ringParticles,
             {
                 spawnedAt: Date.now(),
-                startingPositionX: e.pageX,
-                startingPositionY: e.pageY
+                startingPositionX: positionX,
+                startingPositionY: positionY
             }
         ]);
-        console.log(ringParticles);
     }
+
     useEffect(() => {
         const interval = setInterval(() => {
             setRingParticles(ringParticles.filter((p) => p.spawnedAt + 3000 < Date.now()));
@@ -51,6 +66,9 @@ function Clicker({ }: Props) {
     return (
         <Page>
             <PageContainer>
+                <Header>
+                    <Counter count={coins} />
+                </Header>
                 <RingParticleSystem particles={ringParticles} />
                 <CookieContainer>
                     <Cookie onClick={cookieClicked}></Cookie>

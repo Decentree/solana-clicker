@@ -20,8 +20,7 @@ const Ring = styled.div<{ startingPositionX: number, startingPositionY: number }
     top: calc(${props => props.startingPositionY}px - (196px / 2));
     order: double 1em transparent;
     border-radius: 50%;
-    background-image: linear-gradient(white, green), 
-                    linear-gradient(to right, green, gold);
+    background-image: linear-gradient(#00FFA3, #864DFF);
     background-origin: border-box;
     background-clip: content-box, border-box;
     animation-name: ${scaleAnimation};
