@@ -4,6 +4,7 @@ import Cookie from '../components/clicker/Cookie'
 import Counter from '../components/clicker/Counter'
 import Header from '../components/clicker/Header'
 import RingParticleSystem, { RingParticleEvent } from '../components/clicker/RingParticleSystem'
+import Upgrade from '../components/clicker/Upgrade'
 
 type Props = {}
 
@@ -42,6 +43,10 @@ function Clicker({ }: Props) {
         addCoin();
     }
 
+    const upgradeClicked = () => {
+        setCoints(0);
+    }
+
     // Ring particles
     const [ringParticles, setRingParticles] = useState<RingParticleEvent[]>([]);
 
@@ -71,7 +76,9 @@ function Clicker({ }: Props) {
                 </Header>
                 <RingParticleSystem particles={ringParticles} />
                 <CookieContainer>
-                    <Cookie onClick={cookieClicked}></Cookie>
+                    <Upgrade coins={coins} upgradeCost={100} onUpgradeClick={upgradeClicked}>
+                        <Cookie onClick={cookieClicked}></Cookie>
+                    </Upgrade>
                 </CookieContainer>
             </PageContainer>
         </Page>

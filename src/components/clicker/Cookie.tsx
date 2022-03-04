@@ -18,20 +18,25 @@ const CookieContainer = styled.button`
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: transform 0.2s;
+    transition: all 0.2s;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    background-size: 120% 120%;
     
     &:hover {
-        transform: scale(1.1)
+        transform: scale(1.1);
+        background-position: 0% 0%;
+        background-size: 100% 100%;
     }
 
     &:active {
-        transform: scale(0.9)
+        transform: scale(0.9);
+        background-position: 0% 0%;
+        background-size: 100% 100%;
     }
 `
 
