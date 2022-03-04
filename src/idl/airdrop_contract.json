@@ -1,0 +1,245 @@
+{
+  "version": "0.1.0",
+  "name": "airdrop_contract",
+  "instructions": [
+    {
+      "name": "initialize",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "currencyMintKey",
+          "type": "publicKey"
+        },
+        {
+          "name": "upgradeMintKey",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "airdrop",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "currencyMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "currencyAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "airdropWithUpgrade",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "currencyMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "currencyAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "upgradeMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "upgradeAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "upgradeBalance",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "buyUpgrade",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "authority",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "currencyMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "currencyAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "upgradeMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "upgradeAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "upgradeBalance",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "SetupAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "currencyMintKey",
+            "type": {
+              "array": ["publicKey", 1]
+            }
+          },
+          {
+            "name": "upgradeMintKey",
+            "type": {
+              "array": ["publicKey", 1]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "IncorrectMintKey",
+      "msg": "Upgrade"
+    }
+  ],
+  "metadata": {
+    "address": "7G4gVE1Besvc4A2d5d9TzeAJZmPbez2EHNd7WGvNxqPX"
+  }
+}
