@@ -7,6 +7,7 @@ import MatrixParticleSystem from "../components/clicker/MatrixParticleSystem";
 import RingParticleSystem, { RingParticleEvent } from "../components/clicker/RingParticleSystem";
 import Upgrade from "../components/clicker/Upgrade";
 import WalletDropdown from "../components/clicker/WalletDropdown";
+import WelcomeDialog from "../components/clicker/WelcomeDialog";
 import useSolana from "../hooks/useSolana";
 
 type Props = {};
@@ -57,10 +58,38 @@ const CookieContainer = styled.div`
   }
 `;
 
+const FooterContainer = styled.div`
+  position: absolute;
+  bottom: 15px;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1160px;
+  margin-left: auto;
+  margin-right: auto;
+
+  & a {
+    color: white;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.2s ease-in-out;
+  }
+
+  & a:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+`;
+
 function Clicker({}: Props) {
   const solana = useSolana();
   const { currencyTokenBalance, upgradeTokenBalance, handleAirdrop, handleBuyUpgrade } = solana;
   const upgradeCost = 50 + 50 * Math.pow(upgradeTokenBalance, 2);
+
+  const [isWelcomeDialogOpen, setIsWelcomeDialogOpen] = useState(false);
 
   const cookieClicked: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     spawnRingParticle(e.pageX, e.pageY);
@@ -88,8 +117,18 @@ function Clicker({}: Props) {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    // Check localStorage if page has been visited before
+    const hasVisited = localStorage.getItem("hasVisited");
+    if (hasVisited === null) {
+      setIsWelcomeDialogOpen(true);
+      localStorage.setItem("hasVisited", "true");
+    }
+  }, []);
+
   return (
     <Page>
+      <WelcomeDialog isOpen={isWelcomeDialogOpen} setIsOpen={setIsWelcomeDialogOpen} />
       <MatrixParticleSystem solana={solana} />
       <PageContainer>
         <Header>
@@ -105,6 +144,12 @@ function Clicker({}: Props) {
             <Cookie onClick={cookieClicked}></Cookie>
           </Upgrade>
         </CookieContainer>
+        <FooterContainer>
+          <a onClick={() => setIsWelcomeDialogOpen(true)}>Instructions</a>
+          <a href="https://github.com/Decentree/solana-clicker" target="_blank" rel="noopener noreferrer">
+            GitHub
+          </a>
+        </FooterContainer>
       </PageContainer>
     </Page>
   );
