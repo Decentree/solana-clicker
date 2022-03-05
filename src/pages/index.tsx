@@ -27,6 +27,17 @@ const PageContainer = styled.div`
   margin-right: auto;
 `;
 
+const Row = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+
+  & > *:first-child {
+    margin-right: 100px;
+  }
+`;
+
 const CookieContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -71,8 +82,10 @@ function Clicker({}: Props) {
     <Page>
       <PageContainer>
         <Header>
-          <Counter text="Coins" count={currencyTokenBalance} />
-          <Counter text="LVL" count={upgradeTokenBalance} />
+          <Row>
+            <Counter text="COINS" count={currencyTokenBalance} />
+            <Counter text="LVL" count={upgradeTokenBalance} />
+          </Row>
           <WalletDropdown solana={solana} />
         </Header>
         <RingParticleSystem particles={ringParticles} />
