@@ -2,7 +2,7 @@ import React, { useEffect, useReducer } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { Keypair, SystemProgram, Transaction, Signer, PublicKey } from "@solana/web3.js";
-import { getOrCreateAssociatedTokenAccount } from "@solana/spl-token";
+import { createTransferCheckedInstruction, getOrCreateAssociatedTokenAccount } from "@solana/spl-token";
 import * as bs58 from "bs58";
 import { Program, Provider, BN, web3 } from "@project-serum/anchor";
 
@@ -32,6 +32,8 @@ export const useSolana = () => {
   const [localKeypairBalance, setLocalKeypairBalance] = React.useState<number>(0);
   const [currencyTokenBalance, setCurrencyTokenBalance] = React.useState<number>(0);
   const [upgradeTokenBalance, setUpgradeTokenBalance] = React.useState<number>(0);
+  const [walletCurrencyTokenBalance, setWalletCurrencyTokenBalance] = React.useState<number>(0);
+  const [walletUpgradeTokenBalance, setWalletUpgradeTokenBalance] = React.useState<number>(0);
   const [transfersCounter, transfersCounterUpdate] = useCounter();
   const [transfersPendingCounter, transfersPendingCounterUpdate] = useCounter();
   const [transactionsHistory, setTransactionsHistory] = React.useState<string | null>(null);
@@ -39,6 +41,17 @@ export const useSolana = () => {
   const load = async () => {
     if (publicKey) {
       setBalance((await connection.getBalance(publicKey)) / SOL_LAMPORTS);
+      const tokenBalances = await connection.getParsedTokenAccountsByOwner(publicKey, {
+        programId: TOKEN_PROGRAM_ID,
+      });
+      setWalletCurrencyTokenBalance(
+        tokenBalances.value.find((t) => t.account.data.parsed.info.mint == ACCOUNTS.currencyMint)?.account.data.parsed
+          .info.tokenAmount.amount || 0
+      );
+      setWalletUpgradeTokenBalance(
+        tokenBalances.value.find((t) => t.account.data.parsed.info.mint == ACCOUNTS.upgradeMint)?.account.data.parsed
+          .info.tokenAmount.amount || 0
+      );
     }
     if (localKeypair?.publicKey) {
       setLocalKeypairBalance((await connection.getBalance(localKeypair.publicKey)) / SOL_LAMPORTS);
@@ -86,6 +99,57 @@ export const useSolana = () => {
       );
       console.log(transaction);
 
+      let signature;
+      if (transferFrom == "local" && localKeypair) {
+        signature = await connection.sendTransaction(transaction, [localKeypair], {});
+      } else {
+        signature = await sendTransaction(transaction, connection);
+      }
+      setTransactionsHistory(signature);
+      setTransactionsHistory(null);
+      await connection.confirmTransaction(signature, "processed");
+      transfersCounterUpdate({ type: "increment" });
+      transfersPendingCounterUpdate({ type: "decrement" });
+      load();
+    } catch (error) {
+      // Display error
+      console.error(error);
+    }
+  };
+
+  const handleTransferToken = async (
+    transferFrom: string,
+    transferAddress: string,
+    transferToken: string,
+    transferAmount: number
+  ) => {
+    try {
+      const selectedKey = transferFrom == "local" ? localKeypair?.publicKey : publicKey;
+      if (!selectedKey || !localKeypair) throw new WalletNotConnectedError();
+      const mint = transferToken == "COINS" ? ACCOUNTS.currencyMint : ACCOUNTS.upgradeMint;
+      transfersPendingCounterUpdate({ type: "increment" });
+
+      const fromTokenAccount = await getOrCreateAssociatedTokenAccount(connection, localKeypair, mint, selectedKey);
+      const toTokenAccount = await getOrCreateAssociatedTokenAccount(
+        connection,
+        localKeypair,
+        mint,
+        new PublicKey(transferAddress)
+      );
+
+      const transaction = new Transaction().add(
+        createTransferCheckedInstruction(
+          fromTokenAccount.address,
+          mint,
+          toTokenAccount.address,
+          selectedKey,
+          transferAmount,
+          0,
+          [],
+          TOKEN_PROGRAM_ID
+        )
+      );
+      console.log(transaction);
       let signature;
       if (transferFrom == "local" && localKeypair) {
         signature = await connection.sendTransaction(transaction, [localKeypair], {});
@@ -213,8 +277,11 @@ export const useSolana = () => {
     localKeypairBalance,
     currencyTokenBalance,
     upgradeTokenBalance,
+    walletCurrencyTokenBalance,
+    walletUpgradeTokenBalance,
     transactionsHistory,
     handleTransfer,
+    handleTransferToken,
     handleClearKey,
     transfersCounter,
     transfersPendingCounter,

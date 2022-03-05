@@ -1,5 +1,5 @@
 import { useWalletModal, WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import styled from "styled-components";
 import useSolana from "../../hooks/useSolana";
 
@@ -129,12 +129,35 @@ const TextLight = styled.div`
   margin-bottom: 15px;
 `;
 
+const CurrencySelect = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+`;
+
+const CurrencySelectItem = styled.div<{ active: boolean }>`
+  background: ${(props) => (props.active ? "#9a3fffb5" : "white")};
+  color: ${(props) => (props.active ? "white" : "#505E71")};
+  padding: 6px 20px;
+  text-align: center;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+
+  &:hover {
+    background: ${(props) => (props.active ? "#9a3fff" : "#505E7122")};
+  }
+`;
+
 function WalletDropdown({ solana }: Props) {
   const { visible, setVisible } = useWalletModal();
 
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("deposit");
-  const [transferAmount, setTransferAmount] = useState("0.1");
+  const [activeToken, setActiveToken] = useState("SOL");
+  const [transferAmount, setTransferAmount] = useState("1");
 
   const handleOpen = () => {
     if (solana.publicKey && solana.localKeypair?.publicKey) {
@@ -147,12 +170,36 @@ function WalletDropdown({ solana }: Props) {
   const handleAction = () => {
     if (solana.publicKey && solana.localKeypair?.publicKey) {
       if (activeTab === "deposit") {
-        solana.handleTransfer("wallet", solana.localKeypair?.publicKey.toBase58(), Number(transferAmount));
+        if (activeToken == "SOL") {
+          solana.handleTransfer("wallet", solana.localKeypair?.publicKey.toBase58(), Number(transferAmount));
+        } else {
+          solana.handleTransferToken(
+            "wallet",
+            solana.localKeypair?.publicKey.toBase58(),
+            activeToken,
+            Number(transferAmount)
+          );
+        }
       } else if (activeTab === "withdraw") {
-        solana.handleTransfer("local", solana.publicKey.toBase58(), Number(transferAmount));
+        if (activeToken == "SOL") {
+          solana.handleTransfer("local", solana.publicKey.toBase58(), Number(transferAmount));
+        } else {
+          solana.handleTransferToken("local", solana.publicKey.toBase58(), activeToken, Number(transferAmount));
+        }
       }
+      setIsOpen(false);
     }
   };
+
+  const currentBalance = useMemo(() => {
+    if (activeToken == "SOL") {
+      return activeTab == "deposit" ? solana.balance : solana.localKeypairBalance;
+    } else if (activeToken == "COINS") {
+      return activeTab == "deposit" ? solana.walletCurrencyTokenBalance : solana.currencyTokenBalance;
+    } else if (activeToken == "LVL") {
+      return activeTab == "deposit" ? solana.walletUpgradeTokenBalance : solana.upgradeTokenBalance;
+    }
+  }, [activeTab, activeToken, solana.balance, solana.localKeypairBalance]);
 
   return (
     <WalletDropdownContainer>
@@ -170,9 +217,23 @@ function WalletDropdown({ solana }: Props) {
           </DropdownTab>
         </DropdownTabs>
         <DropdownInner>
-          <div>Amount (SOL)</div>
+          <CurrencySelect>
+            <div>Token: </div>
+            <CurrencySelectItem active={activeToken == "SOL"} onClick={() => setActiveToken("SOL")}>
+              SOL
+            </CurrencySelectItem>
+            <CurrencySelectItem active={activeToken == "COINS"} onClick={() => setActiveToken("COINS")}>
+              COINS
+            </CurrencySelectItem>
+            <CurrencySelectItem active={activeToken == "LVL"} onClick={() => setActiveToken("LVL")}>
+              LVL
+            </CurrencySelectItem>
+          </CurrencySelect>
+          <div>Amount:</div>
           <InputField value={transferAmount} onChange={(e) => setTransferAmount(e.target.value)} />
-          <TextLight>Available: {activeTab == "deposit" ? solana.balance : solana.localKeypairBalance} SOL</TextLight>
+          <TextLight>
+            Available: {currentBalance} {activeToken}
+          </TextLight>
           <ActionButton onClick={handleAction}>Send</ActionButton>
         </DropdownInner>
       </WalletDropdownContent>
