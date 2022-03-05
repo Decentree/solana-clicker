@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 type Props = {
     count: number;
-    text: string;s
+    text: string;
 }
 
 const CounterContainer = styled.div`
