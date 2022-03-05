@@ -51,6 +51,10 @@ const CookieContainer = styled.div`
   justify-content: center;
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 800px) {
+    padding-top: 200px;
+  }
 `;
 
 function Clicker({}: Props) {

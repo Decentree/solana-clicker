@@ -59,6 +59,7 @@ const WalletDropdownContent = styled.div<{ isOpen: boolean }>`
   border-radius: 12px;
   overflow: hidden;
   width: 350px;
+  z-index: 100;
 
   pointer-events: ${(props) => (props.isOpen ? "auto" : "none")};
   top: ${({ isOpen }) => (isOpen ? "105px" : "60px")};
