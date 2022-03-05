@@ -19,13 +19,17 @@ const scaleAnimation = keyframes`
 
 const MatrixParticle = styled.div<{ startingPosition: number }>`
   position: absolute;
-  color: white;
+  background: -webkit-linear-gradient(#00ffa3, #1ffff2);
+  background: linear-gradient(#00ffa3, #1ffff2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   font-family: "Fira Code", monospace;
   font-size: 22px;
   animation: ${scaleAnimation} 6s cubic-bezier(0.1, -0.6, 0.2, 0);
   left: 110%;
   top: ${(props) => props.startingPosition}px;
-  opacity: 0.5;
+  opacity: 1;
 `;
 
 function MatrixParticleSystem({ solana }: Props) {
