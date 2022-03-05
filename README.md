@@ -1,4 +1,4 @@
-# Solana Forest
+# Solana Clicker
 
 ## Documentation
 
