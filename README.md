@@ -25,4 +25,5 @@ yarn run dev
 ## Authors
 
 - Tomas Martykan ([GitHub](https://github.com/martykan), [LinkedIn](https://www.linkedin.com/in/tomas-martykan/))
-- Dominik Vit ([GitHub](https://github.com/), [LinkedIn](https://www.linkedin.com/in/dominik-v%C3%ADt-70a1a6184/))
+- Dominik Vit ([GitHub](https://github.com/KingDoxik), [LinkedIn](https://www.linkedin.com/in/dominik-v%C3%ADt-70a1a6184/))
+- Josef Vacek ([GitHub](https://github.com/vacekj), [LinkedIn](https://www.linkedin.com/in/josef-v-19021b128/))
