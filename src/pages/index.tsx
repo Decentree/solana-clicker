@@ -3,6 +3,7 @@ import styled, { keyframes } from "styled-components";
 import Cookie from "../components/clicker/Cookie";
 import Counter from "../components/clicker/Counter";
 import Header from "../components/clicker/Header";
+import MatrixParticleSystem from "../components/clicker/MatrixParticleSystem";
 import RingParticleSystem, { RingParticleEvent } from "../components/clicker/RingParticleSystem";
 import Upgrade from "../components/clicker/Upgrade";
 import WalletDropdown from "../components/clicker/WalletDropdown";
@@ -85,11 +86,12 @@ function Clicker({}: Props) {
 
   return (
     <Page>
+      <MatrixParticleSystem solana={solana} />
       <PageContainer>
         <Header>
           <Row>
             <Counter text="COINS" count={currencyTokenBalance} />
-            <Counter text="LVL" count={upgradeTokenBalance} />
+            <Counter text="LVL" count={1 + Number(upgradeTokenBalance)} />
           </Row>
           <WalletDropdown solana={solana} />
         </Header>

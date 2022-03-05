@@ -34,6 +34,7 @@ export const useSolana = () => {
   const [upgradeTokenBalance, setUpgradeTokenBalance] = React.useState<number>(0);
   const [transfersCounter, transfersCounterUpdate] = useCounter();
   const [transfersPendingCounter, transfersPendingCounterUpdate] = useCounter();
+  const [transactionsHistory, setTransactionsHistory] = React.useState<string | null>(null);
 
   const load = async () => {
     if (publicKey) {
@@ -137,6 +138,8 @@ export const useSolana = () => {
       console.log(inst);
       const transaction = new Transaction().add(inst);
       const signature = await connection.sendTransaction(transaction, [localKeypair], {});
+      setTransactionsHistory(signature);
+      setTransactionsHistory(null);
       await connection.confirmTransaction(signature, "processed");
       transfersCounterUpdate({ type: "increment" });
       transfersPendingCounterUpdate({ type: "decrement" });
@@ -183,6 +186,7 @@ export const useSolana = () => {
       console.log(inst);
       const transaction = new Transaction().add(inst);
       const signature = await connection.sendTransaction(transaction, [localKeypair], {});
+
       await connection.confirmTransaction(signature, "processed");
       transfersCounterUpdate({ type: "increment" });
       transfersPendingCounterUpdate({ type: "decrement" });
@@ -206,6 +210,7 @@ export const useSolana = () => {
     localKeypairBalance,
     currencyTokenBalance,
     upgradeTokenBalance,
+    transactionsHistory,
     handleTransfer,
     handleClearKey,
     transfersCounter,
