@@ -1,70 +1,28 @@
 # Solana Clicker
 
-## Documentation
+Solana Clicker is a simple game where you click on the screen to earn money. It is an experiment to see how the Solana ecosystem can be used to build a blockchain-based game.
 
-Project is based on `Next.js`, a production-ready React Framework. Check out the [documentation](https://nextjs.org/docs) for more information.
+It was built as a part of Solana [Prague Hacker House 2022](https://lu.ma/prague-hacker-house).
 
-## Prerequisites
+## Contract
 
-- `node`
-- `npm`
+The contract code is in the `contract/` directory. It is built on Anchor framework.
 
-## Usage
+The contract interacts with two game tokens, the currency token and the upgrade token.
 
-**Firstly, install all necessary dependencies:**
+It allows you to mint the currency token, in the basic state at one token per transactions.
+You can exchange the currency token for upgrade tokens, which you can use to mint multiple tokens per transactions. The price of the upgrade tokens increases gradually.
 
-```sh
-npm install
-```
+## Frontend
 
-**To start a development server:**
-
-```sh
-npm run dev
-```
-
-**To build the app for production:**
-
-```sh
-npm run build
-npm start
-```
-
-## Folder structure
+The frontend is based on Next.js, a production-ready React Framework. To run the project yourslef, you need to run:
 
 ```
-template-next/
-├── config (theme)
-├── public
-├── shared (shared files - css, validation, etc.)
-└── src
-    ├── components (inspired by atomic design principles)
-    │   ├── elements (small building blocks)
-    │   ├── layouts (wrappers for templates)
-    │   ├── modules (more building blocks together)
-    │   └── templates (page specific content)
-    ├── graphql (each module and its queries and mutations)
-    ├── i18n (translations)
-    ├── pages
-    ├── services (graphql client and other services)
-    ├── stores (state management)
-    └── types (more complex interfaces)
+yarn install
+yarn run dev
 ```
 
-## What's Inside
+## Authors
 
-- React Framework
-
-  - [Next.js](https://nextjs.org)
-
-- Type-checking
-
-  - [TypeScript](https://www.typescriptlang.org/docs/home.html)
-
-- Code quality tools
-
-  - [Prettier](https://prettier.io/)
-  - [ESLint](https://eslint.org/)
-
-- Other
-  - [Sentry](https://sentry.io/welcome/)
+- Tomas Martykan ([GitHub](https://github.com/martykan), [LinkedIn](https://www.linkedin.com/in/tomas-martykan/))
+- Dominik Vit ([GitHub](https://github.com/), [LinkedIn](https://www.linkedin.com/in/dominik-v%C3%ADt-70a1a6184/))
