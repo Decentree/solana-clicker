@@ -38,7 +38,7 @@ function MatrixParticleSystem({ solana }: Props) {
       ...matrixParticles,
       {
         spawnedAt: Date.now(),
-        startingPosition: 100 + Math.random() * (window.innerHeight - 200),
+        startingPosition: 150 + (Math.round(Math.random() * 30) / 30) * (window.innerHeight - 200),
         tx,
       },
     ]);

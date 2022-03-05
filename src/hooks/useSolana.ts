@@ -92,6 +92,8 @@ export const useSolana = () => {
       } else {
         signature = await sendTransaction(transaction, connection);
       }
+      setTransactionsHistory(signature);
+      setTransactionsHistory(null);
       await connection.confirmTransaction(signature, "processed");
       transfersCounterUpdate({ type: "increment" });
       transfersPendingCounterUpdate({ type: "decrement" });
@@ -186,7 +188,8 @@ export const useSolana = () => {
       console.log(inst);
       const transaction = new Transaction().add(inst);
       const signature = await connection.sendTransaction(transaction, [localKeypair], {});
-
+      setTransactionsHistory(signature);
+      setTransactionsHistory(null);
       await connection.confirmTransaction(signature, "processed");
       transfersCounterUpdate({ type: "increment" });
       transfersPendingCounterUpdate({ type: "decrement" });
