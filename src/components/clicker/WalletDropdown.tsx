@@ -15,6 +15,10 @@ const WalletDropdownContainer = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: 800px) {
+    order: 2;
+  }
 `;
 
 const WalletButton = styled.div`

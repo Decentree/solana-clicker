@@ -33,6 +33,11 @@ const Row = styled.div`
   justify-content: center;
   flex-direction: row;
 
+  @media (max-width: 800px) {
+    order: 3;
+    width: 100%;
+  }
+
   & > *:first-child {
     margin-right: 100px;
   }
