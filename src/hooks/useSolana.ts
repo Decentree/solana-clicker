@@ -66,115 +66,131 @@ export const useSolana = () => {
 
   useEffect(() => {
     load();
-    const interval = setInterval(load, 15000);
+    const interval = setInterval(() => load(), 15000);
     return () => clearInterval(interval);
   }, [connection, publicKey, localKeypair]);
 
   const handleTransfer = async (transferFrom: string, transferAddress: string, transferAmount: number) => {
-    const selectedKey = transferFrom == "local" ? localKeypair?.publicKey : publicKey;
-    if (!selectedKey) throw new WalletNotConnectedError();
-    transfersPendingCounterUpdate({ type: "increment" });
+    try {
+      const selectedKey = transferFrom == "local" ? localKeypair?.publicKey : publicKey;
+      if (!selectedKey) throw new WalletNotConnectedError();
+      transfersPendingCounterUpdate({ type: "increment" });
 
-    const transaction = new Transaction().add(
-      SystemProgram.transfer({
-        fromPubkey: selectedKey,
-        toPubkey: new PublicKey(transferAddress),
-        lamports: transferAmount * SOL_LAMPORTS,
-      })
-    );
-    console.log(transaction);
+      const transaction = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey: selectedKey,
+          toPubkey: new PublicKey(transferAddress),
+          lamports: transferAmount * SOL_LAMPORTS,
+        })
+      );
+      console.log(transaction);
 
-    let signature;
-    if (transferFrom == "local" && localKeypair) {
-      signature = await connection.sendTransaction(transaction, [localKeypair], {});
-    } else {
-      signature = await sendTransaction(transaction, connection);
+      let signature;
+      if (transferFrom == "local" && localKeypair) {
+        signature = await connection.sendTransaction(transaction, [localKeypair], {});
+      } else {
+        signature = await sendTransaction(transaction, connection);
+      }
+      await connection.confirmTransaction(signature, "processed");
+      transfersCounterUpdate({ type: "increment" });
+      transfersPendingCounterUpdate({ type: "decrement" });
+      load();
+    } catch (error) {
+      // Display error
+      console.error(error);
     }
-    await connection.confirmTransaction(signature, "processed");
-    transfersCounterUpdate({ type: "increment" });
-    transfersPendingCounterUpdate({ type: "decrement" });
   };
 
   const handleAirdrop = async () => {
-    if (!localKeypair?.publicKey) throw new WalletNotConnectedError();
+    try {
+      if (!localKeypair?.publicKey) throw new WalletNotConnectedError();
 
-    const currencyTokenAccount = await getOrCreateAssociatedTokenAccount(
-      connection,
-      localKeypair,
-      ACCOUNTS.currencyMint,
-      localKeypair.publicKey
-    );
-    transfersPendingCounterUpdate({ type: "increment" });
-    const upgradeTokenAccount = await getOrCreateAssociatedTokenAccount(
-      connection,
-      localKeypair,
-      ACCOUNTS.upgradeMint,
-      localKeypair.publicKey
-    );
-    const upgradeTokenBalance = Number(upgradeTokenAccount.amount);
+      const currencyTokenAccount = await getOrCreateAssociatedTokenAccount(
+        connection,
+        localKeypair,
+        ACCOUNTS.currencyMint,
+        localKeypair.publicKey
+      );
+      transfersPendingCounterUpdate({ type: "increment" });
+      const upgradeTokenAccount = await getOrCreateAssociatedTokenAccount(
+        connection,
+        localKeypair,
+        ACCOUNTS.upgradeMint,
+        localKeypair.publicKey
+      );
+      const upgradeTokenBalance = Number(upgradeTokenAccount.amount);
 
-    //@ts-ignore
-    const provider = new Provider(connection, { publicKey: localKeypair.publicKey }, {});
-    //@ts-ignore
-    const program = new Program(AIRDROP_CONTRACT_IDL, AIRDROP_CONTRACT_IDL.metadata.address, provider);
-    //@ts-ignore
-    const inst = program.instruction.airdropWithUpgrade(new BN(upgradeTokenBalance), {
-      accounts: {
-        signer: localKeypair?.publicKey,
-        currencyAccount: currencyTokenAccount.address,
-        upgradeAccount: upgradeTokenAccount.address,
-        ...ACCOUNTS,
-      },
-      signers: [localKeypair],
-    });
-    console.log(inst);
-    const transaction = new Transaction().add(inst);
-    const signature = await connection.sendTransaction(transaction, [localKeypair], {});
-    await connection.confirmTransaction(signature, "processed");
-    transfersCounterUpdate({ type: "increment" });
-    transfersPendingCounterUpdate({ type: "decrement" });
-    load();
+      //@ts-ignore
+      const provider = new Provider(connection, { publicKey: localKeypair.publicKey }, {});
+      //@ts-ignore
+      const program = new Program(AIRDROP_CONTRACT_IDL, AIRDROP_CONTRACT_IDL.metadata.address, provider);
+      //@ts-ignore
+      const inst = program.instruction.airdropWithUpgrade(new BN(upgradeTokenBalance), {
+        accounts: {
+          signer: localKeypair?.publicKey,
+          currencyAccount: currencyTokenAccount.address,
+          upgradeAccount: upgradeTokenAccount.address,
+          ...ACCOUNTS,
+        },
+        signers: [localKeypair],
+      });
+      console.log(inst);
+      const transaction = new Transaction().add(inst);
+      const signature = await connection.sendTransaction(transaction, [localKeypair], {});
+      await connection.confirmTransaction(signature, "processed");
+      transfersCounterUpdate({ type: "increment" });
+      transfersPendingCounterUpdate({ type: "decrement" });
+      load();
+    } catch (error) {
+      // Display error
+      console.error(error);
+    }
   };
 
   const handleBuyUpgrade = async () => {
-    if (!localKeypair?.publicKey) throw new WalletNotConnectedError();
+    try {
+      if (!localKeypair?.publicKey) throw new WalletNotConnectedError();
 
-    const currencyTokenAccount = await getOrCreateAssociatedTokenAccount(
-      connection,
-      localKeypair,
-      ACCOUNTS.currencyMint,
-      localKeypair.publicKey
-    );
-    transfersPendingCounterUpdate({ type: "increment" });
-    const upgradeTokenAccount = await getOrCreateAssociatedTokenAccount(
-      connection,
-      localKeypair,
-      ACCOUNTS.upgradeMint,
-      localKeypair.publicKey
-    );
-    const upgradeTokenBalance = Number(upgradeTokenAccount.amount);
+      const currencyTokenAccount = await getOrCreateAssociatedTokenAccount(
+        connection,
+        localKeypair,
+        ACCOUNTS.currencyMint,
+        localKeypair.publicKey
+      );
+      transfersPendingCounterUpdate({ type: "increment" });
+      const upgradeTokenAccount = await getOrCreateAssociatedTokenAccount(
+        connection,
+        localKeypair,
+        ACCOUNTS.upgradeMint,
+        localKeypair.publicKey
+      );
+      const upgradeTokenBalance = Number(upgradeTokenAccount.amount);
 
-    //@ts-ignore
-    const provider = new Provider(connection, { publicKey: localKeypair.publicKey }, {});
-    //@ts-ignore
-    const program = new Program(AIRDROP_CONTRACT_IDL, AIRDROP_CONTRACT_IDL.metadata.address, provider);
-    //@ts-ignore
-    const inst = program.instruction.buyUpgrade(new BN(upgradeTokenBalance), {
-      accounts: {
-        signer: localKeypair?.publicKey,
-        currencyAccount: currencyTokenAccount.address,
-        upgradeAccount: upgradeTokenAccount.address,
-        ...ACCOUNTS,
-      },
-      signers: [localKeypair],
-    });
-    console.log(inst);
-    const transaction = new Transaction().add(inst);
-    const signature = await connection.sendTransaction(transaction, [localKeypair], {});
-    await connection.confirmTransaction(signature, "processed");
-    transfersCounterUpdate({ type: "increment" });
-    transfersPendingCounterUpdate({ type: "decrement" });
-    load();
+      //@ts-ignore
+      const provider = new Provider(connection, { publicKey: localKeypair.publicKey }, {});
+      //@ts-ignore
+      const program = new Program(AIRDROP_CONTRACT_IDL, AIRDROP_CONTRACT_IDL.metadata.address, provider);
+      //@ts-ignore
+      const inst = program.instruction.buyUpgrade(new BN(upgradeTokenBalance), {
+        accounts: {
+          signer: localKeypair?.publicKey,
+          currencyAccount: currencyTokenAccount.address,
+          upgradeAccount: upgradeTokenAccount.address,
+          ...ACCOUNTS,
+        },
+        signers: [localKeypair],
+      });
+      console.log(inst);
+      const transaction = new Transaction().add(inst);
+      const signature = await connection.sendTransaction(transaction, [localKeypair], {});
+      await connection.confirmTransaction(signature, "processed");
+      transfersCounterUpdate({ type: "increment" });
+      transfersPendingCounterUpdate({ type: "decrement" });
+      load();
+    } catch (error) {
+      // Display error
+      console.error(error);
+    }
   };
 
   const handleClearKey = () => {

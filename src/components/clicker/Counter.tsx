@@ -2,14 +2,16 @@ import React from 'react'
 import styled from 'styled-components'
 
 type Props = {
-    count: number
+    count: number;
+    text: string;s
 }
 
 const CounterContainer = styled.div`
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
 `
 
 const CounterText = styled.div`
@@ -32,15 +34,15 @@ const LabelText = styled.div`
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-left: 16px;
+    /*margin-left: 16px;*/
     `
 
 
-function Counter({ count }: Props) {
+function Counter({ count, text }: Props) {
     return (
         <CounterContainer>
             <CounterText>{count}</CounterText>
-            <LabelText>COINS</LabelText>
+            <LabelText>{text}</LabelText>
         </CounterContainer>
     )
 }
